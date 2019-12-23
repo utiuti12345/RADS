@@ -15,3 +15,17 @@ func NewFileInfoResponse(fileName string,fileId string,driveId string,teamDriveI
 		TeamDriveId:teamDriveId,
 	}
 }
+
+type TeamDriveInfoResponse struct {
+	TeamDriveName string
+	TeamDriveId string
+	Kind string
+}
+
+func NewTeamDriveInfoResponse(teamDriveName string,teamDriveId string, kind string) TeamDriveInfoResponse {
+	return TeamDriveInfoResponse{
+		TeamDriveName:teamDriveName,
+		TeamDriveId:teamDriveId,
+		Kind:kind,
+	}
+}

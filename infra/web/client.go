@@ -42,21 +42,45 @@ func (dr DriveClient) GetFileList()(fileList []domain.FileInfo, err error) {
 		return nil,err
 	}
 
-	//drive,_ := dr.DriveService.Drives.List().UseDomainAdminAccess(true).Do()
-	//fmt.Print(drive)
-	//drive,_ = srv.Drives.List().Do()
+
+	drive,err := srv.Drives.List().UseDomainAdminAccess(true).Do()
+	drive,err = srv.Drives.List().UseDomainAdminAccess(true).Q("name contains 'sample'").Do()
+	dlc := srv.Drives.List().UseDomainAdminAccess(true)
+	ddd , err := dlc.Q("name contains 'sample'").Do()
+	if err != nil {
+		return nil,err
+	}
+	fmt.Print(ddd)
+	drive,_ = srv.Drives.List().UseDomainAdminAccess(true).Q("memberCount>1").Fields().Do()
+	fmt.Print(drive)
+	drive,_ = srv.Drives.List().Do()
 
 	fl, err := srv.Files.List().Do()
 	if err != nil {
 		return nil,err
 	}
+	fmt.Print(fl)
 
 	var fil []domain.FileInfo
 	for _,f := range fl.Files{
 		fil = append(fil,domain.NewFileInfo(f.Name,f.Id,f.MimeType,f.DriveId,f.TeamDriveId,f.Size,nil))
 	}
 
-	return fil, nil
+	return fileList, nil
+}
+
+func (dr DriveClient) GetTeamDriveList()(fileList []domain.TeamDriveInfo, err error) {
+	tdl,err := dr.DriveService.Teamdrives.List().UseDomainAdminAccess(true).Do()
+	if err != nil {
+		return nil,err
+	}
+
+	var fdil []domain.TeamDriveInfo
+	for _,td := range tdl.TeamDrives{
+		fdil = append(fdil,domain.NewTeamDriveInfo(td.Name,td.Id,td.Kind))
+	}
+
+	return fdil, nil
 }
 
 func (dr DriveClient) TransferDrive(fileName string)(webViewLink string,err error){

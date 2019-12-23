@@ -14,4 +14,5 @@ type ApiHandler interface {
 	GetFileList() (fileList []domain.FileInfo, err error)
 	TransferDrive(fileName string)(webViewLink string,err error)
 	DownloadFile(file *domain.FileInfo)(err error)
+	GetTeamDriveList() (teamDriveList []domain.TeamDriveInfo, err error)
 }

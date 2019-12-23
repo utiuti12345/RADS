@@ -18,7 +18,7 @@ func LoadRouter() *echo.Echo {
 	}
 
 	// If modifying these scopes, delete your previously saved token.jsn.
-	config, err := google.ConfigFromJSON(b, drive.DriveMetadataReadonlyScope)
+	config, err := google.ConfigFromJSON(b, drive.DriveScope)
 	if err != nil {
 		log.Fatalf("Unable to parse client secret file to config: %v", err)
 	}
@@ -29,6 +29,7 @@ func LoadRouter() *echo.Echo {
 
 	h, _ := handler.NewHandler(client)
 	e.GET("/", func(ctx echo.Context) error { return h.GetFileList(ctx) })
+	e.GET("/teamDriveList", func(ctx echo.Context) error { return h.GetTeamDriveList(ctx) })
 
 
 	return e

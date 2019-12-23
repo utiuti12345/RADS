@@ -10,6 +10,12 @@ type FileInfo struct {
 	Data []byte
 }
 
+type TeamDriveInfo struct {
+	TeamDriveName string
+	TeamDriveId string
+	Kind string
+}
+
 func NewFileInfo(fileName string,fileId string,mineType string,driveId string,teamDriveId string,size int64,data []byte) FileInfo{
 	return FileInfo{
 		FileName:fileName,
@@ -19,5 +25,13 @@ func NewFileInfo(fileName string,fileId string,mineType string,driveId string,te
 		TeamDriveId:teamDriveId,
 		Size:size,
 		Data:data,
+	}
+}
+
+func NewTeamDriveInfo(teamDriveName string,teamDriveId string, kind string) TeamDriveInfo {
+	return TeamDriveInfo{
+		TeamDriveName:teamDriveName,
+		TeamDriveId:teamDriveId,
+		Kind:kind,
 	}
 }
