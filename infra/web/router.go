@@ -28,9 +28,9 @@ func LoadRouter() *echo.Echo {
 	}
 
 	h, _ := handler.NewHandler(client)
-	e.GET("/", func(ctx echo.Context) error { return h.GetFileList(ctx) })
+	e.GET("/files/:driveId", func(ctx echo.Context) error { return h.GetFileList(ctx) })
 	e.GET("/teamDriveList", func(ctx echo.Context) error { return h.GetTeamDriveList(ctx) })
-
+	e.POST("/copy", func(ctx echo.Context) error { return h.CopyFile(ctx) })
 
 	return e
 }

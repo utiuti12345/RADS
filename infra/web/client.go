@@ -36,37 +36,18 @@ func NewClient(config *oauth2.Config) (driveClient DriveClient,err error) {
 	}, nil
 }
 
-func (dr DriveClient) GetFileList()(fileList []domain.FileInfo, err error) {
-	srv, err := drive.New(dr.HTTPClient)
+func (dr DriveClient) GetFileList(driveId string)(fileList []domain.FileInfo, err error) {
+	fl, err := dr.DriveService.Files.List().SupportsAllDrives(true).IncludeItemsFromAllDrives(true).Corpora("drive").DriveId(driveId).Do()
 	if err != nil {
 		return nil,err
 	}
-
-
-	drive,err := srv.Drives.List().UseDomainAdminAccess(true).Do()
-	drive,err = srv.Drives.List().UseDomainAdminAccess(true).Q("name contains 'sample'").Do()
-	dlc := srv.Drives.List().UseDomainAdminAccess(true)
-	ddd , err := dlc.Q("name contains 'sample'").Do()
-	if err != nil {
-		return nil,err
-	}
-	fmt.Print(ddd)
-	drive,_ = srv.Drives.List().UseDomainAdminAccess(true).Q("memberCount>1").Fields().Do()
-	fmt.Print(drive)
-	drive,_ = srv.Drives.List().Do()
-
-	fl, err := srv.Files.List().Do()
-	if err != nil {
-		return nil,err
-	}
-	fmt.Print(fl)
-
 	var fil []domain.FileInfo
 	for _,f := range fl.Files{
+		//if f.MimeType == "application/vnd.google-apps.spreadsheet" {
 		fil = append(fil,domain.NewFileInfo(f.Name,f.Id,f.MimeType,f.DriveId,f.TeamDriveId,f.Size,nil))
 	}
 
-	return fileList, nil
+	return fil, nil
 }
 
 func (dr DriveClient) GetTeamDriveList()(fileList []domain.TeamDriveInfo, err error) {
@@ -83,27 +64,22 @@ func (dr DriveClient) GetTeamDriveList()(fileList []domain.TeamDriveInfo, err er
 	return fdil, nil
 }
 
-func (dr DriveClient) TransferDrive(fileName string)(webViewLink string,err error){
-	srv, err := drive.New(dr.HTTPClient)
-	if err != nil {
-		return webViewLink,err
+func (dr DriveClient) TransferDrive(distFileInfoList []domain.FileInfo, srcDriveIds []string) (err error){
+	for _ , dfi := range distFileInfoList{
+		df, err := dr.DriveService.Files.Get(dfi.FileId).SupportsAllDrives(true).Do()
+		if err != nil {
+			return err
+		}
+		cf := &drive.File{
+			Name:"copy" + df.Name,
+			Parents:srcDriveIds,
+		}
+		f, err := dr.DriveService.Files.Copy(df.Id,cf).SupportsAllDrives(true).Do(); if err != nil {
+			return err
+		}
+		fmt.Println(f.Name)
 	}
-
-	if _, err := fmt.Scan(&fileName); err != nil {
-		return webViewLink,err
-	}
-	uploadFile, err := os.Open(fileName)
-	if err != nil {
-		return webViewLink,err
-	}
-
-	f := &drive.File{Name: fileName, Description: "test"}
-
-	res, err := srv.Files.Create(f).Media(uploadFile).Do()
-	if err != nil {
-		return webViewLink,err
-	}
-	return res.WebViewLink,nil
+	return err
 }
 
 func (dr DriveClient) DownloadFile(file *domain.FileInfo)(err error){
@@ -129,7 +105,7 @@ func getTokenFromWeb(config *oauth2.Config) *oauth2.Token {
 		log.Fatalf("Unable to read authorization code %v", err)
 	}
 
-	tok, err := config.Exchange(context.TODO(), authCode)
+	tok, err := config.Exchange(context.TODO(), "4/uwEXj2HIc1As0KCpmzhiPYbVsWIYTDG0EKnE77MCAaYphvYzCzehGGI")
 	if err != nil {
 		log.Fatalf("Unable to retrieve token from web %v", err)
 	}

@@ -3,14 +3,16 @@ package response
 type FileInfoResponse struct {
 	FileName string
 	FileId string
+	MineType string
 	DriveId string
 	TeamDriveId string
 }
 
-func NewFileInfoResponse(fileName string,fileId string,driveId string,teamDriveId string) FileInfoResponse {
+func NewFileInfoResponse(fileName string,fileId string,mineType string,driveId string,teamDriveId string) FileInfoResponse {
 	return FileInfoResponse{
 		FileName:fileName,
 		FileId:fileId,
+		MineType:mineType,
 		DriveId:driveId,
 		TeamDriveId:teamDriveId,
 	}
