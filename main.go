@@ -1,7 +1,17 @@
 package main
 
-import "RosterAutomaticDeliverySystem/infra/web"
+import (
+	"RosterAutomaticDeliverySystem/config"
+	"RosterAutomaticDeliverySystem/infra/web"
+	"flag"
+)
+
+var (
+	f = flag.String("f", "", "credentials path")
+)
 
 func main(){
-	web.LoadRouter().Start(":1323")
+	flag.Parse()
+	gc := config.NewGoogleConfig(*f, *f)
+	web.LoadRouter(gc).Start(":1323")
 }
