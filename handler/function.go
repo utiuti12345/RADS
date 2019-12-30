@@ -39,7 +39,7 @@ func (h Handler) GetTeamDriveList(ctx Context) (err error) {
 func (h Handler) CopyFile(ctx Context) (err error) {
 	cfr := new(request.CopyFileRequest)
 	if err := ctx.Bind(cfr); err != nil {
-		return ctx.String(http.StatusInternalServerError, err.Error())
+		return ctx.String(http.StatusBadRequest, err.Error())
 	}
 
 	var fil []domain.FileInfo
@@ -49,6 +49,18 @@ func (h Handler) CopyFile(ctx Context) (err error) {
 
 	if err := h.ApiHandler.TransferDrive(fil,cfr.SrcDriveIds); err != nil {
 		return ctx.String(http.StatusInternalServerError, err.Error())
+	}
+	return nil
+}
+
+func (h Handler) PostSlack(ctx Context) (err error){
+	psr := new(request.PostSlackRequest)
+	if err := ctx.Bind(psr); err != nil {
+		return ctx.String(http.StatusBadRequest, err.Error())
+	}
+
+	if err := h.Slack.PostMessage(psr.Title,psr.Message); err != nil{
+		return ctx.String(http.StatusInternalServerError, err[0].Error())
 	}
 	return nil
 }

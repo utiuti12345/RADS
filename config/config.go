@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/BurntSushi/toml"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"google.golang.org/api/drive/v2"
@@ -13,16 +14,38 @@ import (
 	"path"
 )
 
+type Config struct {
+	GoogleConfig GoogleConfig
+	SlackConfig  SlackConfig
+}
+
 type GoogleConfig struct {
 	Config *oauth2.Config
 	Token  *oauth2.Token
 }
 
+type SlackConfig struct {
+	WebHookConfig WebHookConfig `toml:"slack"`
+}
+type WebHookConfig struct {
+	WebhookUrl string `toml:"webhookurl"`
+	Channel    string `toml:"channel"`
+	UserName   string `toml:"username"`
+}
+
+const CONFIG_TOML = "config.toml"
 const CREDENTIALS_JSON = "credentials.json"
 const TOKEN_JSON = "token.json"
 
+func NewConfig(googleConfig GoogleConfig, slackConfig SlackConfig)Config{
+	return Config{
+		GoogleConfig: googleConfig,
+		SlackConfig:  slackConfig,
+	}
+}
+
 func NewGoogleConfig(credentialJsonPath string, tokenJsonPath string) GoogleConfig {
-	b, err := ioutil.ReadFile(path.Join(credentialJsonPath,CREDENTIALS_JSON))
+	b, err := ioutil.ReadFile(path.Join(credentialJsonPath, CREDENTIALS_JSON))
 	if err != nil {
 		log.Fatalf("Unable to read client secret file: %v", err)
 	}
@@ -33,7 +56,7 @@ func NewGoogleConfig(credentialJsonPath string, tokenJsonPath string) GoogleConf
 		log.Fatalf("Unable to parse client secret file to config: %v", err)
 	}
 
-	tokFile := path.Join(credentialJsonPath,TOKEN_JSON)
+	tokFile := path.Join(credentialJsonPath, TOKEN_JSON)
 	tok, err := tokenFromFile(tokFile)
 	if err != nil {
 		tok = getTokenFromWeb(config)
@@ -82,4 +105,13 @@ func saveToken(path string, token *oauth2.Token) {
 	}
 	defer f.Close()
 	json.NewEncoder(f).Encode(token)
+}
+
+func LoadFile(configTomlPath string) (slackConfig SlackConfig,error error) {
+	var sc SlackConfig
+	_, err := toml.DecodeFile(path.Join(configTomlPath,CONFIG_TOML), &sc)
+	if err != nil {
+		return slackConfig, err
+	}
+	return sc, err
 }

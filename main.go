@@ -12,6 +12,8 @@ var (
 
 func main(){
 	flag.Parse()
+	sc,_ := config.LoadFile(*f)
 	gc := config.NewGoogleConfig(*f, *f)
-	web.LoadRouter(gc).Start(":1323")
+	c := config.NewConfig(gc,sc)
+	web.LoadRouter(c).Start(":1323")
 }
