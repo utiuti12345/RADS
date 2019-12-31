@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: rads
+  name: rads
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: rads
+  template:
+    metadata:
+      labels:
+        app: rads
+        version: blue
+    spec:
+      containers:
+        - name: rads-blue
+          image: utiuti12345/rads:0.1.2
+          imagePullPolicy: Always
+          ports:
+            - name:          http
+              protocol:      TCP
+              containerPort: 1323
+          livenessProbe:
+            httpGet:
+              port: http
+              path: /healthCheck
+            initialDelaySeconds: 10
+            periodSeconds:       10
+            timeoutSeconds:      10
+          readinessProbe:
+            httpGet:
+              port: http
+              path: /healthCheck
+            initialDelaySeconds: 10
+            periodSeconds:       10
+            timeoutSeconds:      10
+          volumeMounts:
+            - name: all
+              mountPath: "/secret"
+              readOnly: true
+      volumes:
+        - name: all
+          projected:
+            sources:
+              - secret:
+                  name: credential-json
+              - secret:
+                  name: token-json
+              - configMap:
+                  name: config

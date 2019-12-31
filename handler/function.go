@@ -7,6 +7,10 @@ import (
 	"net/http"
 )
 
+func (h Handler) HealthCheck(ctx Context) (err error) {
+	return ctx.String(http.StatusOK, "HealthCheck OK")
+}
+
 func (h Handler) GetFileList(ctx Context) (err error) {
 	di := ctx.Param("driveId")
 	fl, err := h.ApiHandler.GetFileList(di)

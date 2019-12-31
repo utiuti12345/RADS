@@ -1,0 +1,14 @@
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: rads
+  name: rads
+spec:
+  type: LoadBalancer
+  selector:
+    app: rads
+  ports:
+    - name:     http
+      protocol: TCP
+      port:       1323
+      targetPort: 1323

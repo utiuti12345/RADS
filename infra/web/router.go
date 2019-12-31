@@ -13,6 +13,7 @@ func LoadRouter(config config.Config) *echo.Echo {
 	s := slack.NewSlack(config.SlackConfig.WebHookConfig.WebhookUrl,config.SlackConfig.WebHookConfig.Channel,config.SlackConfig.WebHookConfig.UserName)
 	c, _ := NewClient(config.GoogleConfig.Config,config.GoogleConfig.Token)
 	h, _ := handler.NewHandler(c,s)
+	e.GET("/healthCheck", func(ctx echo.Context) error { return h.HealthCheck(ctx) })
 	e.GET("/files/:driveId", func(ctx echo.Context) error { return h.GetFileList(ctx) })
 	e.GET("/teamDriveList", func(ctx echo.Context) error { return h.GetTeamDriveList(ctx) })
 	e.POST("/copy", func(ctx echo.Context) error { return h.CopyFile(ctx) })
