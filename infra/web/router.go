@@ -16,7 +16,9 @@ func LoadRouter(config config.Config) *echo.Echo {
 	e.GET("/healthCheck", func(ctx echo.Context) error { return h.HealthCheck(ctx) })
 	e.GET("/files/:driveId", func(ctx echo.Context) error { return h.GetFileList(ctx) })
 	e.GET("/teamDriveList", func(ctx echo.Context) error { return h.GetTeamDriveList(ctx) })
+	e.GET("/DriveList", func(ctx echo.Context) error { return h.GetDriveList(ctx) })
 	e.POST("/copy", func(ctx echo.Context) error { return h.CopyFile(ctx) })
+	e.POST("/create", func(ctx echo.Context) error { return h.Create(ctx) })
 	e.POST("/postSlack", func(ctx echo.Context) error { return h.PostSlack(ctx) })
 
 	return e

@@ -19,6 +19,8 @@ type ApiHandler interface {
 	TransferDrive(distFileInfoList []domain.FileInfo, srcDriveIds []string) (err error)
 	DownloadFile(file *domain.FileInfo) (err error)
 	GetTeamDriveList() (teamDriveList []domain.TeamDriveInfo, err error)
+	GetDriveList() (driveList []domain.DriveInfo, err error)
+	CreateContent(content domain.ContentInfo) (createInfo domain.ContentInfo, err error)
 }
 
 type Slack interface {

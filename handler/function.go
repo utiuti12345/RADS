@@ -40,10 +40,24 @@ func (h Handler) GetTeamDriveList(ctx Context) (err error) {
 	return ctx.JSON(http.StatusOK, tdir)
 }
 
+func (h Handler) GetDriveList(ctx Context) (err error) {
+	tdl, err := h.ApiHandler.GetDriveList()
+	if err != nil {
+		return ctx.String(http.StatusInternalServerError, err.Error())
+	}
+
+	var tdir []response.DriveInfoResponse
+	for _,v := range tdl{
+		tdir = append(tdir,response.NewDriveInfoResponse(v.DriveName,v.DriveId,v.Kind))
+	}
+
+	return ctx.JSON(http.StatusOK, tdir)
+}
+
 func (h Handler) CopyFile(ctx Context) (err error) {
 	cfr := new(request.CopyFileRequest)
 	if err := ctx.Bind(cfr); err != nil {
-		return ctx.String(http.StatusBadRequest, err.Error())
+		return ctx.JSON(http.StatusBadRequest, err.Error())
 	}
 
 	var fil []domain.FileInfo
@@ -52,9 +66,23 @@ func (h Handler) CopyFile(ctx Context) (err error) {
 	}
 
 	if err := h.ApiHandler.TransferDrive(fil,cfr.SrcDriveIds); err != nil {
-		return ctx.String(http.StatusInternalServerError, err.Error())
+		return ctx.JSON(http.StatusInternalServerError, err.Error())
 	}
-	return nil
+	return ctx.JSON(http.StatusOK, "OK")
+}
+
+func (h Handler) Create(ctx Context) (err error) {
+	cr := new(request.CreateRequest)
+	if err := ctx.Bind(cr); err != nil {
+		return ctx.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	cc, err := h.ApiHandler.CreateContent(domain.NewContentInfo(cr.Name,"",cr.MimeType,cr.Parents[0],"",0,nil))
+	if err != nil {
+		return ctx.JSON(http.StatusInternalServerError, err.Error())
+	}
+
+	return ctx.JSON(http.StatusOK, response.NewContentInfoResponse(cc.Name,cc.Id,cc.MineType,cc.DriveId,cc.TeamDriveId))
 }
 
 func (h Handler) PostSlack(ctx Context) (err error){

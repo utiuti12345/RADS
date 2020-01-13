@@ -31,35 +31,3 @@ func NewTeamDriveInfoResponse(teamDriveName string,teamDriveId string, kind stri
 		Kind:kind,
 	}
 }
-
-type DriveInfoResponse struct {
-	DriveName string
-	DriveId string
-	Kind string
-}
-
-func NewDriveInfoResponse(driveName string,driveId string, kind string) DriveInfoResponse {
-	return DriveInfoResponse{
-		DriveName:driveName,
-		DriveId:driveId,
-		Kind:kind,
-	}
-}
-
-type ContentInfoResponse struct {
-	Name string
-	Id string
-	MineType string
-	DriveId string
-	TeamDriveId string
-}
-
-func NewContentInfoResponse(name string,id string,mineType string,driveId string,teamDriveId string) ContentInfoResponse {
-	return ContentInfoResponse{
-		Name:name,
-		Id:id,
-		MineType:mineType,
-		DriveId:driveId,
-		TeamDriveId:teamDriveId,
-	}
-}
