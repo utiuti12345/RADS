@@ -3,7 +3,7 @@ package domain
 type FileInfo struct {
 	FileName string
 	FileId string
-	MineType string
+	MimeType string
 	DriveId string
 	TeamDriveId string
 	Size int64
@@ -25,18 +25,18 @@ type DriveInfo struct {
 type ContentInfo struct {
 	Name string
 	Id string
-	MineType string
+	MimeType string
 	DriveId string
 	TeamDriveId string
 	Size int64
 	Data []byte
 }
 
-func NewFileInfo(fileName string,fileId string,mineType string,driveId string,teamDriveId string,size int64,data []byte) FileInfo{
+func NewFileInfo(fileName string,fileId string,mimeType string,driveId string,teamDriveId string,size int64,data []byte) FileInfo{
 	return FileInfo{
 		FileName:fileName,
 		FileId:fileId,
-		MineType:mineType,
+		MimeType:mimeType,
 		DriveId:driveId,
 		TeamDriveId:teamDriveId,
 		Size:size,
@@ -60,11 +60,11 @@ func NewDriveInfo(teamDriveName string,teamDriveId string, kind string) DriveInf
 	}
 }
 
-func NewContentInfo(name string,id string,mineType string,driveId string,teamDriveId string,size int64,data []byte) ContentInfo{
+func NewContentInfo(name string,id string,mimeType string,driveId string,teamDriveId string,size int64,data []byte) ContentInfo{
 	return ContentInfo{
 		Name:name,
 		Id:id,
-		MineType:mineType,
+		MimeType:mimeType,
 		DriveId:driveId,
 		TeamDriveId:teamDriveId,
 		Size:size,

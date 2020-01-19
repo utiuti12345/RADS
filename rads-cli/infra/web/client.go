@@ -90,6 +90,42 @@ func (c Client) GetRosterFileList(path string,driveId string,dateTime string) (f
 	return fil,err
 }
 
+func (c Client) CreateFolder(path string,content domain.ContentInfo ,driveIds []string) (createContent domain.ContentInfo,err error) {
+	cr := request.NewCreateRequest(content.Name,content.MimeType,driveIds)
+
+	body,err := json.Marshal(cr)
+
+	req, err := http.NewRequest(
+		"POST",
+		fmt.Sprintf("%s%s", c.URL, path),
+		bytes.NewBuffer(body),
+	)
+	if err != nil {
+		return createContent,err
+	}
+
+	req.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return createContent,err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return createContent,errors.New(resp.Status)
+	}
+
+	defer resp.Body.Close()
+	b, err := ioutil.ReadAll(resp.Body)
+	var res response.ContentInfoResponse
+	if err = json.Unmarshal(b, &res); err != nil {
+		return createContent, err
+	}
+
+	return domain.NewContentInfo(res.Name,res.Id,res.MimeType,res.DriveId,res.DriveId,0,nil),nil
+}
+
 func (c Client) CopyFiles(path string,fileInfoList []domain.FileInfo ,driveIds []string) (err error) {
 	// /copy
 	var copyreq request.CopyFileRequest

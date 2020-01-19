@@ -21,6 +21,7 @@ type ApiHandler interface {
 	GetTeamDriveList() (teamDriveList []domain.TeamDriveInfo, err error)
 	GetDriveList() (driveList []domain.DriveInfo, err error)
 	CreateContent(content domain.ContentInfo) (createInfo domain.ContentInfo, err error)
+	GetContent(content domain.ContentInfo) (createInfo domain.ContentInfo, err error)
 }
 
 type Slack interface {

@@ -88,11 +88,26 @@ func (dr DriveClient) TransferDrive(distFileInfoList []domain.FileInfo, srcDrive
 	return nil
 }
 
+func (dr DriveClient) GetContent(content domain.ContentInfo) (getContentInfo domain.ContentInfo, err error) {
+	query := "name = '" + content.Name + "' and mimeType = '" + content.MimeType + "'"
+	f, err := dr.DriveService.Files.List().Q(query).SupportsAllDrives(true).Do()
+	if err != nil {
+		return getContentInfo, err
+	}
+	if len(f.Files) == 0 {
+		return getContentInfo,nil
+	}
+	return domain.NewContentInfo(f.Files[0].Name, f.Files[0].Id, f.Files[0].MimeType, f.Files[0].DriveId, f.Files[0].TeamDriveId, f.Files[0].Size, nil), nil
+}
+
 func (dr DriveClient) CreateContent(content domain.ContentInfo) (createInfo domain.ContentInfo, err error) {
 	cf := &drive.File{
 		Name:     content.Name,
-		MimeType: content.MineType,
-		Parents:  []string{content.DriveId},
+		MimeType: content.MimeType,
+	}
+	if content.DriveId != "" {
+		// Parentsを指定しない場合はローカルドライブの直下にできる
+		cf.Parents = []string{content.DriveId}
 	}
 
 	f, err := dr.DriveService.Files.Create(cf).SupportsAllDrives(true).Do()
@@ -109,7 +124,7 @@ func (dr DriveClient) DownloadFile(file *domain.FileInfo) (err error) {
 		return err
 	}
 
-	r, err := srv.Files.Export(file.FileId, file.MineType).Download()
+	r, err := srv.Files.Export(file.FileId, file.MimeType).Download()
 	b, err := ioutil.ReadAll(r.Body)
 	file.Data = b
 

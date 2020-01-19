@@ -20,7 +20,7 @@ func (h Handler) GetFileList(ctx Context) (err error) {
 
 	var fir []response.FileInfoResponse
 	for _,v := range fl{
-		fir = append(fir,response.NewFileInfoResponse(v.FileName,v.FileId,v.MineType,v.DriveId,v.TeamDriveId))
+		fir = append(fir,response.NewFileInfoResponse(v.FileName,v.FileId,v.MimeType,v.DriveId,v.TeamDriveId))
 	}
 
 	return ctx.JSON(http.StatusOK, fir)
@@ -77,12 +77,24 @@ func (h Handler) Create(ctx Context) (err error) {
 		return ctx.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	cc, err := h.ApiHandler.CreateContent(domain.NewContentInfo(cr.Name,"",cr.MimeType,cr.Parents[0],"",0,nil))
+	parents := ""
+	if len(cr.Parents) != 0 {
+		parents = cr.Parents[0]
+	}
+
+	cc, err := h.ApiHandler.GetContent(domain.NewContentInfo(cr.Name,"",cr.MimeType,parents,"",0,nil))
 	if err != nil {
 		return ctx.JSON(http.StatusInternalServerError, err.Error())
 	}
 
-	return ctx.JSON(http.StatusOK, response.NewContentInfoResponse(cc.Name,cc.Id,cc.MineType,cc.DriveId,cc.TeamDriveId))
+	if cc.Id == "" {
+		cc, err = h.ApiHandler.CreateContent(domain.NewContentInfo(cr.Name,"",cr.MimeType,parents,"",0,nil))
+		if err != nil {
+			return ctx.JSON(http.StatusInternalServerError, err.Error())
+		}
+	}
+
+	return ctx.JSON(http.StatusOK, response.NewContentInfoResponse(cc.Name,cc.Id,cc.MimeType,cc.DriveId,cc.TeamDriveId))
 }
 
 func (h Handler) PostSlack(ctx Context) (err error){

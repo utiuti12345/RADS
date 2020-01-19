@@ -17,4 +17,5 @@ type ApiHandler interface {
 	GetTeamDriveByName(path string,driveName string) (teamDriveInfo domain.TeamDriveInfo, err error)
 	GetRosterFileList(path string,driveId string,dateTime string) (fileInfoList []domain.FileInfo, err error)
 	CopyFiles(path string,fileInfoList []domain.FileInfo ,driveIds []string) (err error)
+	CreateFolder(path string,content domain.ContentInfo ,driveIds []string) (createContent domain.ContentInfo,err error)
 }
