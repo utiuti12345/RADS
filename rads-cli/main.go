@@ -19,7 +19,7 @@ func main() {
 		year := context.String("y")
 		month := context.String("m")
 		driveName := context.String("f")
-		host := context.String("h")
+		host := context.String("H")
 
 		if driveName == "" {
 			fmt.Printf("-f をつけて実行してください")
@@ -34,7 +34,7 @@ func main() {
 			return nil
 		}
 		if host == "" {
-			fmt.Printf("-h をつけて実行してください")
+			fmt.Printf("-H をつけて実行してください")
 			return nil
 		}
 
@@ -62,7 +62,7 @@ func main() {
 			Usage: "コピーしたい共有ドライブを設定する -f 勤務表",
 		},
 		cli.StringFlag{
-			Name:  "host, h",
+			Name:  "host, H",
 			Usage: "RADSのAPIサーバーを指定する -h http://localhost:1323",
 		},
 	}

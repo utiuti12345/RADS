@@ -4,7 +4,8 @@ metadata:
   namespace: rads
   name: rads
 spec:
-  type: LoadBalancer
+  type: ClusterIP
+  #type: LoadBalancer
   selector:
     app: rads
   ports:

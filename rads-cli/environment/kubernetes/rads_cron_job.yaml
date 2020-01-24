@@ -1,0 +1,26 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  namespace: rads
+  name: rads-cli
+spec:
+  concurrencyPolicy: Replace
+  # UTC なので 9時間マイナス
+  schedule: "56 6 * * *"
+  #schedule: "00 9 1 * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: rads-blue
+            image: utiuti12345/rads-cli:0.1.4
+            command: ["/bin/sh", "-c"]
+            args: ["/work/rads.sh ${HOST} ${FOLDER}"]
+            env:
+              - name: HOST
+                value: "http://rads-api-server-ip:1323"
+              - name: FOLDER
+                value: "コピーするフォルダ"
+          restartPolicy: OnFailure
+      backoffLimit: 3
