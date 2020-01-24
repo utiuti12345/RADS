@@ -21,6 +21,6 @@ spec:
               - name: HOST
                 value: "http://rads-api-server-ip:1323"
               - name: FOLDER
-                value: "コピーするフォルダ"
+                value: "コピーしたい勤務表が存在するフォルダ"
           restartPolicy: OnFailure
       backoffLimit: 3
