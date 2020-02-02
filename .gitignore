@@ -15,6 +15,6 @@
 # vendor/
 
 .idea
-token.json
-credentials.json
+token*.json
+credentials*.json
 config.toml
