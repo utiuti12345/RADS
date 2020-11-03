@@ -14,12 +14,12 @@ spec:
         spec:
           containers:
           - name: rads-blue
-            image: utiuti12345/rads-cli:0.1.9
+            image: utiuti12345/rads-cli:0.1.10
             command: ["/bin/sh", "-c"]
             args: ["/work/rads.sh ${HOST} ${FOLDER}"]
             env:
               - name: HOST
-                value: "http://rads-api-server-ip:1323"
+                value: "http://10.0.1.6:1323"
               - name: FOLDER
                 value: "勤務表"
           restartPolicy: OnFailure

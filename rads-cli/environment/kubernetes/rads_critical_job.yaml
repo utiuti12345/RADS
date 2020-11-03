@@ -1,0 +1,20 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  namespace: rads
+  name: rads-cli
+spec:
+  template:
+    spec:
+      containers:
+      - name: rads-blue
+        image: utiuti12345/rads-cli:0.1.10
+        command: ["/bin/sh", "-c"]
+        args: ["/work/rads-critical.sh ${HOST} ${FOLDER}"]
+        env:
+          - name: HOST
+            value: "http://10.0.1.6:1323"
+          - name: FOLDER
+            value: "勤務表"
+      restartPolicy: OnFailure
+  backoffLimit: 3
