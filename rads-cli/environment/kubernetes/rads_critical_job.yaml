@@ -13,7 +13,7 @@ spec:
         args: ["/work/rads-critical.sh ${HOST} ${FOLDER}"]
         env:
           - name: HOST
-            value: "http://rads_apiのpod_ip:1323"
+            value: "http://api-pod-ip:1323"
           - name: FOLDER
             value: "勤務表"
       restartPolicy: OnFailure

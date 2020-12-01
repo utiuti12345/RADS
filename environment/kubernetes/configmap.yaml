@@ -6,6 +6,6 @@ metadata:
 data:
   config.toml: |
     [slack]
-    webhookurl = "slack_url"
-    channel    = "channel"
-    username   = "user_name"
+    webhookurl = "https://incoming-webhookのURL"
+    channel    = "general"
+    username   = "勤務表"
