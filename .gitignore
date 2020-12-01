@@ -18,6 +18,6 @@
 token*.json
 credentials*.json
 config.toml
-./enviroment/kubernetes/configmap_production.yaml
-./rads-cli/enviroment/kubernetes/rads_critical_job_production.yaml
-./rads-cli/enviroment/kubernetes/rads_cron_job_production.yaml
+./environment/kubernetes/configmap_production.yaml
+./rads-cli/environment/kubernetes/rads_critical_job_production.yaml
+./rads-cli/environment/kubernetes/rads_cron_job_production.yaml
